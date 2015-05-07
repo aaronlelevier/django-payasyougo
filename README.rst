@@ -8,6 +8,8 @@ Libraries Used
 --------------
 `Remark <https://github.com/gnab/remark/>`_ for the Slideshow
 
+`RST Syntax guide <http://thomas-cokelaer.info/tutorials/sphinx/rest_syntax.html#internal-and-external-links>`_
+
 
 Python Packages
 ---------------
