@@ -6,7 +6,7 @@ and how different libraries work together.
 
 Libraries Used
 --------------
-`Remark<https://github.com/gnab/remark>`_ for the Slideshow
+<a href="https://github.com/gnab/remark">Remark</a> for the Slideshow
 
 
 Python Packages
