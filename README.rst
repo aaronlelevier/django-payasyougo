@@ -6,7 +6,27 @@ and how different libraries work together.
 
 Installation
 ------------
-# TODO
+
+.. code-block::
+
+	# git clone repo
+	git clone https://github.com/aronysidoro/django-payasyougo.git
+
+	# create virtualenv
+	virtualenv -p /usr/local/bin/python3.4 <path/to/new/virtualenv/>
+
+	# activate virtualenv
+	path/to/new/virtualenv/bin/activate
+
+	# install dependencies
+	pip install -r requirements.txt
+
+	# migrate database
+	cd payg
+	python manage.py migrate
+
+	# run
+	python manage.py runserver
 
 
 Pythonic Highlights

@@ -31,9 +31,16 @@ class Dates(object):
         return self._now.month
 
 
-class AbstractBase(Dates, models.Model):
+class TimeStampBase(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     modified = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        abstract = True
+
+
+class AbstractBase(Dates, TimeStampBase):
+    "Models can use multiple inheritance from base classes."
 
     class Meta:
         abstract = True
@@ -91,9 +98,7 @@ class Hotel(AbstractBase):
         return self.address_phone[2:5]
 
     def get_absolute_url(self):
-        return reverse('account',
-            kwargs={'slug':self.slug, 'pk':self.pk})
-
+        return reverse('account', kwargs={'slug':self.slug, 'pk':self.pk})
 
 
 ###########
