@@ -54,5 +54,7 @@ coverage.xml
 # Sphinx documentation
 docs/_build/
 
-# PyBuilder
-target/
+# Django
+db.sqlite3
+migrations/*
+*.pyc

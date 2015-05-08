@@ -29,6 +29,6 @@ router.register(r'groups', user_views.GroupViewSet)
 urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
     # REST Views
-    url(r'^', include(router.urls)),
+    url(r'^api/', include(router.urls)),
     url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework'))
 ]
