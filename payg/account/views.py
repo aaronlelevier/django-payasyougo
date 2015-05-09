@@ -1,64 +1,27 @@
-import calendar
-
-from django.conf import settings
-from django.shortcuts import render
-from django.utils.translation import ugettext_lazy as _
-from django.http import HttpResponse, Http404, HttpResponseRedirect
-from django.core.urlresolvers import reverse, reverse_lazy
-from django.contrib import auth, messages
-from django.contrib.auth import REDIRECT_FIELD_NAME, views as auth_views
-from django.contrib.auth.decorators import login_required, permission_required
-from django.contrib.auth.models import User, Group, AnonymousUser
-
-from django.views.generic import View, ListView, DetailView
-from django.views.generic.base import TemplateView, RedirectView
-from django.views.generic.edit import FormView, CreateView, UpdateView, FormMixin
-from django.db.models import Avg, Max, Min, Sum
+from django.views.generic import ListView
+from django.views.generic.base import TemplateView
 
 from rest_framework.response import Response
-from rest_framework import generics, permissions, mixins
+from rest_framework import generics, permissions
 
 from braces.views import (LoginRequiredMixin, PermissionRequiredMixin,
     GroupRequiredMixin, SetHeadlineMixin, AnonymousRequiredMixin)
 
-from account.decorators import anonymous_required
-from account.forms import (AuthenticationForm, CloseAccountForm,
-    CloseAcctConfirmForm, AcctCostCreateForm)
-from account.helpers import login_messages
-from account.models import AcctCost, AcctStmt, AcctTrans, Pricing
+from account.models import AcctStmt, AcctTrans, Pricing
 from account.serializers import PricingSerializer
 
 
-### ACCOUNT VIEWS ###
-
-class AccountView(LoginRequiredMixin, HotelUserMixin, TemplateView):
+class AccountView(LoginRequiredMixin, TemplateView):
     """
-    Main Account (profile) View.
-
-    First time this is dispatched, make sure:
-    - Hotel has a subaccount_sid
-    - Assign a Twilio Ph #
+    Main Account View (Profile View of Hotel)
     """
     template_name = 'cpanel/account.html'
 
     def get_context_data(self, **kwargs):
-        '''TODO: clean up logic here b/4 produciton
-            move `get_or_create` to a helper method?
-
-            If move PhoneNumber.get_or_create + Subaccount.get_or_create
-                to a Celery Job, can use:
-                    `select_related() so only 1 query instead of 2?
-        '''
         context = super().get_context_data(**kwargs)
-
-        context['hotel'] = self.hotel
-
+        context['hotel'] = self.request.user.profile.hotel
         return context
 
-
-#############
-# ACCT STMT #
-#############
 
 class AcctStmtListView(AdminOnlyMixin, SetHeadlineMixin, ListView):
     '''AcctStmt by Month.'''
@@ -70,9 +33,8 @@ class AcctStmtListView(AdminOnlyMixin, SetHeadlineMixin, ListView):
         return AcctStmt.objects.filter(hotel=self.hotel)
 
     def get(self, request, *args, **kwargs):
-        '''Ensure the current month's AcctStmt is up to date.
-
-        TODO: Make this a daiy job, and not in the View.get()
+        '''
+        TODO: use a model method here.
         '''
         # acct_stmt = update_current_acct_stmt(hotel=self.hotel)
         return super().get(request, *args, **kwargs)

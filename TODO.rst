@@ -6,4 +6,4 @@ utils.email?
 
 django-rest-framework - use DefaultRouter() for Account, User Models
 
-account.views - clean up imports
+add @signal to autocreate UserProfile when Users are created
