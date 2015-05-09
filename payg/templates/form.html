@@ -19,7 +19,10 @@
         <div>
             {{ form.as_div }}
             <div class="form-group">
-                <div class="col-sm-2 col-sm-offset-10">
+                <div class="col-sm-4">
+                    {{ register_link|safe }}
+                </div>
+                <div class="col-sm-offset-10">
                     <button class="btn btn-primary next-step btn-block" ng-disabled="{{ form.form_name }}.$invalid">
                         Next <i class="fa fa-arrow-circle-right"></i>
                     </button>

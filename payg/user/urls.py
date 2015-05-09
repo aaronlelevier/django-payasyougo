@@ -1,5 +1,7 @@
 from django.conf.urls import patterns, include, url
 from django.contrib.auth import views as auth_views
+from django.template.loader import render_to_string
+from django.core.urlresolvers import reverse
 
 from user import views
 from user.forms import (AuthenticationForm, PasswordResetForm, SetPasswordForm,
@@ -14,7 +16,8 @@ urlpatterns = patterns('',
         'authentication_form': AuthenticationForm,
         'redirect_field_name': '/',
         'extra_context': {
-            'headline': 'Login Form'
+            'headline': 'Login Form',
+            'register_link': '<p>Need an account? <a href="/register/">Register here</a>'
             }
         },
         name='login'),

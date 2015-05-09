@@ -30,8 +30,9 @@ def verify_logout(request):
     return render(request, 'verify_logout.html')
 
 
-class RegistrationView(AnonymousRequiredMixin, FormValidMessageMixin, CreateView):
+class RegistrationView(AnonymousRequiredMixin, SetHeadlineMixin, FormValidMessageMixin, CreateView):
     """Create a new User, login User, display 'loging success' msg."""
+    headline = "Register"
     model = User
     form_class = UserCreateForm
     template_name = 'form.html'
