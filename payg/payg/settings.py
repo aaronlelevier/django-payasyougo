@@ -136,6 +136,15 @@ STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 
+### STATIC ACCOUNT URLS ###
+LOGIN_URL = '/account/login/'
+LOGIN_REDIRECT_URL = '/account/private/'
+LOGIN_ERROR_URL = '/account/login-error/'
+VERIFY_LOGOUT_URL = '/account/verify-logout/'
+REDIRECT_FIELD_NAME = '/'
+LOGIN_SUCCESS_URL = '/account/'
+
+
 ### DJANGO-REST-FRAMEWORK
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': (
