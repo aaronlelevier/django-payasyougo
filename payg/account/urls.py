@@ -2,8 +2,6 @@ from django.conf.urls import patterns, include, url
 from django.contrib.auth import views as auth_views
 
 from account import views
-from account.forms import (AuthenticationForm, PasswordResetForm, SetPasswordForm,
-    PasswordChangeForm)
 
 
 acct_stmt_patterns = patterns('',

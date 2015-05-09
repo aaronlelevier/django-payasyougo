@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+
+
+{% block content %}
+    <h1>Are you sure that you want to checkout?</h1>
+    <br>
+    <button><a href="{% url 'logout' %}">Logout</a></button>
+{% endblock content %}

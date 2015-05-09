@@ -23,10 +23,10 @@ class AccountView(LoginRequiredMixin, TemplateView):
         return context
 
 
-class AcctStmtListView(AdminOnlyMixin, SetHeadlineMixin, ListView):
+class AcctStmtListView(LoginRequiredMixin, SetHeadlineMixin, ListView):
     '''AcctStmt by Month.'''
 
-    headline = _("Account Statements")
+    headline = "Account Statements"
     template_name = 'list.html'
 
     def get_queryset(self):
@@ -40,7 +40,7 @@ class AcctStmtListView(AdminOnlyMixin, SetHeadlineMixin, ListView):
         return super().get(request, *args, **kwargs)
 
 
-class AcctStmtDetailView(AdminOnlyMixin, TemplateView):
+class AcctStmtDetailView(LoginRequiredMixin, TemplateView):
     '''
     All AcctTrans for a single Month.
 

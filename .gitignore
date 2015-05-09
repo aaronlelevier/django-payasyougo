@@ -55,6 +55,3 @@ coverage.xml
 docs/_build/
 
 # Django
-db.sqlite3
-migrations/*
-*.pyc

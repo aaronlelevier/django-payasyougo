@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+
+
+{% block content %}
+<div class="row">
+    <h1>{{ headline|safe }}</h1>
+</div>
+<div class="row">
+    <h2><em>{{ user }}</em> Info</h2>
+    <ul>
+        {% for k,v in user_dict.items %}
+            <li><b>{{ k }}:</b> {{ v }}
+        {% endfor %}
+    </ul>
+</div>
+{% endblock content %}

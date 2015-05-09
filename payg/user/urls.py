@@ -10,8 +10,13 @@ urlpatterns = patterns('',
 
     # Registration Views
     url(r'^login/$',auth_views.login,
-        {'template_name': 'cpanel/auth-forms/login.html',
-        'authentication_form': AuthenticationForm},
+        {'template_name': 'form.html',
+        'authentication_form': AuthenticationForm,
+        'redirect_field_name': '/',
+        'extra_context': {
+            'headline': 'Login Form'
+            }
+        },
         name='login'),
 
     ### 2 views for password change - when you are logged in and want to 
@@ -53,8 +58,15 @@ urlpatterns = patterns('',
         name='password_reset_complete'),
 
     ### My Auth Views
-    url(r'^verify-logout/$', views.verify_logout, name='verify_logout'),
+    url(r'^register/$', views.RegistrationView.as_view(), name='register'),
     url(r'^logout/$', views.logout, name='logout'),
-    url(r'^private/$', views.private, name='private'),
-    url(r'^login-error/$', views.login_error, name='login_error'),
+    url(r'^verify-logout/$', views.verify_logout, name='verify_logout'),
+
+    ### User Views
+    url(r'^accounts/profile/$', views.UserDetailView.as_view(), name='user_detail'),
 )
+
+
+
+
+

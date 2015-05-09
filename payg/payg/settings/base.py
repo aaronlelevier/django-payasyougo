@@ -80,7 +80,7 @@ ROOT_URLCONF = 'payg.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -124,10 +124,6 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.8/howto/static-files/
 
-TEMPLATE_DIRS = (
-    os.path.join(BASE_DIR, 'templates'),
-    )
-
 STATICFILES_DIRS = (
     os.path.join(BASE_DIR, 'source'),
     )
@@ -138,12 +134,11 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 
 ### STATIC ACCOUNT URLS ###
-LOGIN_URL = '/account/login/'
-LOGIN_REDIRECT_URL = '/account/private/'
-LOGIN_ERROR_URL = '/account/login-error/'
-VERIFY_LOGOUT_URL = '/account/verify-logout/'
+LOGIN_URL = '/login/'
 REDIRECT_FIELD_NAME = '/'
 LOGIN_SUCCESS_URL = '/account/'
+LOGOUT_URL = '/logout/'
+VERIFY_LOGOUT_URL = '/verify-logout/'
 
 
 ### DJANGO-REST-FRAMEWORK
@@ -168,7 +163,7 @@ LOGGING = {
         'file': {
             'level': 'DEBUG',
             'class': 'logging.FileHandler',
-            'filename': os.path.join(BASE_DIR, 'payg/log/debug.log'),
+            'filename': os.path.join(BASE_DIR, 'log/debug.log'),
         },
     },
     'loggers': {
@@ -186,7 +181,7 @@ TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
 
 NOSE_ARGS = [
     '--with-coverage',
-    '--cover-package=account',
+    '--cover-package=account,user,payg.views',
 ]
 
 if 'test' in sys.argv:
