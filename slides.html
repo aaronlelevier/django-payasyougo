@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Title</title>
+    <title>Django</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <style type="text/css">
       @import url(https://fonts.googleapis.com/css?family=Yanone+Kaffeesatz);
@@ -21,51 +21,271 @@
 
 class: center, middle
 
-# Title
+# Django MVC and Project Layout
+
+---
+
+# About Me
+Hi, I'm Aaron Lelevier. 
+
+Django stack:
+- Python / Django
+- PostgreSQL 
+- Nginx
+- uWSGI
+- Celery
+- Redis
+- RabbitMQ
+- SaltStack
+- AngularJS
+
+### Project Repo for this talk:
+[django-payasyougo](https://github.com/aronysidoro/django-payasyougo)
 
 ---
 
 # Agenda
 
-1. Introduction
-2. Deep-dive
-3. ...
+1. Django MVC Structure
+2. MVC Examples
+3. Django is Pythonic
+4. Project Structure
+5. Questions?
 
 ---
 
-# About Me
+# Django MVC Structure
 
----
+### Model (models.py)
 
-# Introduction
-
-Emphasis, aka italics, with *asterisks* or _underscores_.
-
-Strong emphasis, aka bold, with **asterisks** or __underscores__.
-
-Combined emphasis with **asterisks and _underscores_**.
-
-Strikethrough uses two tildes. ~~Scratch this.~~
-
----
-
-# Test Code blocks
-
-```javascript
-var s = "JavaScript syntax highlighting";
-alert(s);
+```python
+class Hotel(models.Model):
+    name = models.CharField("Name", unique=True, max_length=100)
 ```
+
+### Controller (views.py)
+
+```python
+def hotel_view(request):
+    hotel = Hotel.objects.first()
+    return render(request, "hotel.html", {'hotel': hotel})
+```
+
+### View (hotel.html)
+
+```xml
+<h1>Hotel Name: {{ hotel.name }}</h1>
+```
+
+---
+
+# Don't forget URLs
+
+```python
+from django.conf.urls import patterns
+from account import views
+
+urlpatterns = patterns('',
+    # View
+    url(r'^hotel-view/$', views.hotel_view, name='hotel_view'),
+
+    # Views use Regex, kwargs
+    url(r'^hotel-detail-view/(?P<pk>\d+)/$', views.hotel_detail_view,
+        name='hotel_detail_view'),
+)
+```
+
+#### hotel-detail-view (views.py)
+```python
+from django.shortcuts import render, get_object_or_404
+
+def hotel_detail_view(request, pk):
+    hotel = get_object_or_404(Hotel, pk=pk)
+    return render(request, "hotel.html", {'hotel': hotel})
+    
+```
+---
+
+# Models (models.py)
+
+Models can use Inheritance
+
+TimeStampBase example from "Two Scoops of Django"
  
 ```python
-s = "Python syntax highlighting"
-print s
-```
- 
-```
-No language indicated, so no syntax highlighting. 
-But let's throw in a <b>tag</b>.
+from django.db import models
+from django.contrib.auth.models import User
+
+class TimeStampBase(models.Model):
+    created = models.DateTimeField(auto_now_add=True)
+    modified = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        abstract = True
+
+class UserProfile(TimeStampBase):
+    user = models.OneToOneField(User, primary_key=True, related_name='profile')
+    hotel = models.ForeignKey(Hotel, blank=True, null=True)
+
+    def __str__(self):
+        return self.user.username
 ```
 
+---
+
+# Model Manager and Django ORM
+
+#### python
+
+```python
+hotels = Hotel.objects.all()
+```
+
+#### SQL equivalent
+```sql
+SELECT *
+FROM hotel
+```
+
+#### python
+```python
+# get all Users that have signed up in the last 30 days
+import datetime
+from user.models import UserProfile
+
+date = datetime.datetime.now() - datetime.timedelta(days=30)
+user_profiles = UserProfile.objects.filter(active__gte=date)
+```
+
+---
+
+# Create Custom Managers
+
+```python
+import datetime
+from django.db import models
+
+class UserProfileManager(models.Manager):
+    def active_users(self):
+        date = datetime.datetime.now() - datetime.timedelta(days=30)
+        return self.filter(active__gte=date)
+
+class UserProfile(models.Model):
+    active = models.DateField(auto_now=True)
+    # other model fields here
+
+    objects = UserProfileManager()
+```
+
+---
+
+# Controller (views.py)
+
+```python
+from django.views.generic import TemplateView
+
+class IndexView(TemplateView):
+    template_name = "index.html"
+```
+
+```python
+# django-braces
+from braces.views import LoginRequiredMixin, SetHeadlineMixin
+
+class UserDetailView(LoginRequiredMixin, SetHeadlineMixin, TemplateView):
+    template_name = 'profile.html'
+
+    def get_headline(self):
+        return "<em>{}'s</em> Home Page".format(self.request.user)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        # populate user in the context w/o the password key
+        user_dict = model_to_dict(self.request.user)
+        user_dict.pop("password", None)
+        context['user_dict'] = user_dict
+        return context
+```
+---
+
+# View (base.html)
+
+```xml
+{% load staticfiles %}
+<!DOCTYPE html>
+<html lang="en" ng-app="django-forms">
+    <head>
+        <title>django-payasyougo</title>
+        {% block main_css %}
+            <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+        {% endblock main_css %}
+    </head>
+    <body>
+        <div class="container">
+            {% if not user.is_authenticated %}
+                <a href="{% url 'login' %}"><button>Login</button></a>
+            {% else %}
+                <a href="{% url 'logout' %}"><button>Logout</button></a>
+            {% endif %}
+            {% block content %}
+            {% endblock content %}
+        </div>
+        {% block main_js %}
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+            <script src="{% static 'forms/js/ng-django-forms.js' %}"></script>
+        {% endblock main_js %}
+    </body>
+</html>
+```
+
+---
+# View (profile.html)
+
+#### views.py: class UserDetailView ...
+
+```xml
+{% extends "base.html" %}
+{% load staticfiles %}
+
+{% block content %}
+<div class="row">
+    <h1>{{ headline|safe }}</h1>
+</div>
+<div class="row">
+    <h2><em>{{ user }}</em> Info</h2>
+    <ul>
+        {% for k,v in user_dict.items %}
+            <li><b>{{ k }}:</b> {{ v }}
+        {% endfor %}
+    </ul>
+</div>
+{% endblock content %}
+```
+
+---
+
+# Tests
+
+#### Use TestCase and/or py.test
+
+```python
+from django.test import TestCase
+from django.core.urlresolvers import reverse
+
+
+class ViewTests(TestCase):
+
+    def test_index(self):
+        response = self.client.get(reverse('index'))
+        assert response.status_code == 200
+        assert response.context['headline']
+```
+
+---
+
+class: center, middle
+
+# Questions?
 
     </textarea>
     <script src="https://gnab.github.io/remark/downloads/remark-latest.min.js">

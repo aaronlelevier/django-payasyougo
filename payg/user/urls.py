@@ -68,8 +68,3 @@ urlpatterns = patterns('',
     ### User Views
     url(r'^accounts/profile/$', views.UserDetailView.as_view(), name='user_detail'),
 )
-
-
-
-
-
