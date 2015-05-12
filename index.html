@@ -153,7 +153,7 @@ class Hotel(TimeStampBase):
 
     @property
     def area_code(self):
-        return self.address_phone[:2]
+        return self.address_phone[:3]
 ```
 
 ---
@@ -165,7 +165,7 @@ class Hotel(TimeStampBase):
 hotel = Hotel.objects.first()
 ```
 
-#### Get all hotel objects
+#### Get all hotel records
 ```python
 hotels = Hotel.objects.all()
 ```
@@ -198,12 +198,12 @@ class Hotel(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     # other model fields here
 
-    objects = UserProfileManager()
+    objects = HotelManager()
 ```
 
 #### Then just call the custom Manager method
 ```python
-recent_users = Hotel.objects.recent_hotels()
+recent_hotels = Hotel.objects.recent_hotels()
 ```
 
 ---
@@ -326,6 +326,7 @@ class UserDetailView(LoginRequiredMixin, SetHeadlineMixin, TemplateView):
 
 # Views use Regex, kwargs
 
+#### urls.py
 ```python
 from django.conf.urls import patterns
 from account import views
@@ -336,15 +337,17 @@ urlpatterns = patterns('',
 )
 ```
 
-#### hotel-detail-view (views.py)
+#### views.py
 ```python
+from django.shorcuts import get_object_or_404
+
 def hotel_detail_view(request, pk):
     hotel = get_object_or_404(Hotel, pk=pk)
     return render(request, "hotel.html", {'hotel': hotel})
     
 ```
 
-#### template (hotel.html)
+#### hotel.html
 ```xml
 <a href="{% url 'hotel_detail_view' hotel.pk %}">Hotel Detail View</a>
 ```
@@ -371,6 +374,10 @@ class ViewTests(TestCase):
 ```
 
 [model_mommy](https://model-mommy.readthedocs.org/en/latest/): use to easily generate Models for testing.
+
+[django-nose](https://pypi.python.org/pypi/django-nose)
+
+[django-coverage](https://pypi.python.org/pypi/django-coverage)
 
 ---
 
