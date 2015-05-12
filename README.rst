@@ -3,6 +3,10 @@ django-payasyougo
 A simple Django App to demonstrate the MVC structure, project structure,
 and how different libraries work together.
 
+Slideshow for this talk
+-----------------------
+`Slideshow <https://aronysidoro.github.io/django-payasyougo/>`_ on Github.io
+
 
 Installation
 ------------
