@@ -39,6 +39,8 @@ SQL Server full-time
 
 Django / Python part-time
 
+Volunteer tutoring at Innevation Center
+
 Current project: [Textress.com](https://textress.com) is 
 SMS chat for businesses.
 
@@ -46,26 +48,34 @@ SMS chat for businesses.
 
 # Agenda
 
-### 1. Django MVC Structure
-- including URLs in Django
-- ORM
-
-3. Django is Pythonic
-4. Project Structure
-5. Questions?
-
+1. Django MVC Structure
+    - MVC and URLs
+    - URLs Continued
+2. Models
+3. Django ORM
+4. Create Custom Managers 
+5. Custom QuerySets and Managers
+6. Controller
+7. View
+    - base.html
+    - profile.html
+8. Views use Regex, kwargs
+9. Tests
+10. MVC example of decoupling
+11. Questions?
+12. Some References
 ---
 
 # Django MVC Structure
 
-### Model (models.py)
+#### Model (models.py)
 
 ```python
 class Hotel(models.Model):
     name = models.CharField("Name", unique=True, max_length=100)
 ```
 
-### Controller (views.py)
+#### Controller (views.py)
 
 ```python
 def hotel_view(request):
@@ -73,39 +83,48 @@ def hotel_view(request):
     return render(request, "hotel.html", {'hotel': hotel})
 ```
 
-### View (hotel.html)
+#### View (hotel.html)
 
 ```xml
 <h1>Hotel Name: {{ hotel.name }}</h1>
 ```
 
----
-
-# Don't forget URLs
+#### URLs (urls.py)
 
 ```python
-from django.conf.urls import patterns
-from account import views
-
 urlpatterns = patterns('',
-    # View
     url(r'^hotel-view/$', views.hotel_view, name='hotel_view'),
-
-    # Views use Regex, kwargs
-    url(r'^hotel-detail-view/(?P<pk>\d+)/$', views.hotel_detail_view,
-        name='hotel_detail_view'),
 )
 ```
 
-#### hotel-detail-view (views.py)
-```python
-from django.shortcuts import render, get_object_or_404
+---
 
-def hotel_detail_view(request, pk):
-    hotel = get_object_or_404(Hotel, pk=pk)
-    return render(request, "hotel.html", {'hotel': hotel})
-    
+## URLs Continued
+
+```python
+urlpatterns = patterns('',
+    url(r'^hotel-view/$', views.hotel_view, name='hotel_view'),
+)
 ```
+
+#### Access URL from other views
+
+```python
+def login(request):
+    # view logic here
+    return HttpResponseRedirect(reverse('hotel_view'))
+```
+
+#### Make the URL available in the HTML Template
+
+```xml
+<div>
+...
+    <p><a href="{% url 'hotel_view' %}">Hotel View</a></p>
+...
+</div>
+```
+
 ---
 
 # Models (models.py)
@@ -115,9 +134,6 @@ Models can use Inheritance
 TimeStampBase example from [Two Scoops of Django](http://twoscoopspress.org/products/two-scoops-of-django-1-8)
  
 ```python
-from django.db import models
-from django.contrib.auth.models import User
-
 class TimeStampBase(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     modified = models.DateTimeField(auto_now=True)
@@ -125,38 +141,44 @@ class TimeStampBase(models.Model):
     class Meta:
         abstract = True
 
-class UserProfile(TimeStampBase):
-    user = models.OneToOneField(User, primary_key=True, related_name='profile')
-    hotel = models.ForeignKey(Hotel, blank=True, null=True)
+class Hotel(TimeStampBase):
+    name = models.CharField(_("Hotel Name"), unique=True, max_length=100)
+    address_phone = models.CharField(_("Contact Phone Number"), max_length=12,
+        help_text="10-digit phone number. i.e.: 7025101234")
+    address_zip = models.PositiveIntegerField(_("Zipcode"), max_length=5,
+        help_text="5-digit zipcode. i.e.: 89109")
 
     def __str__(self):
-        return self.user.username
+        return self.name
+
+    @property
+    def area_code(self):
+        return self.address_phone[:2]
 ```
 
 ---
 
-# Model Manager and Django ORM
+# Django ORM
 
-#### python
+#### Get the 1st hotel record
+```python
+hotel = Hotel.objects.first()
+```
 
+#### Get all hotel objects
 ```python
 hotels = Hotel.objects.all()
 ```
 
-#### SQL equivalent
-```sql
-SELECT *
-FROM hotel
+#### Get all hotels in the 89109 zip code
+```python
+hotels = Hotel.objects.filter(address_zip=89109)
 ```
 
-#### python
+#### Call filters on fields
 ```python
-# get all Users that have signed up in the last 30 days
-import datetime
-from user.models import UserProfile
-
-date = datetime.datetime.now() - datetime.timedelta(days=30)
-user_profiles = UserProfile.objects.filter(active__gte=date)
+# date is a "datetime" object
+hotels = Hotel.objects.filter(modified__gte=date) 
 ```
 
 ---
@@ -167,17 +189,52 @@ user_profiles = UserProfile.objects.filter(active__gte=date)
 import datetime
 from django.db import models
 
-class UserProfileManager(models.Manager):
-    def active_users(self):
+class HotelManager(models.Manager):
+    def recent_hotels(self):
         date = datetime.datetime.now() - datetime.timedelta(days=30)
-        return self.filter(active__gte=date)
+        return self.filter(created__gte=date)
 
-class UserProfile(models.Model):
-    active = models.DateField(auto_now=True)
+class Hotel(models.Model):
+    created = models.DateTimeField(auto_now_add=True)
     # other model fields here
 
     objects = UserProfileManager()
 ```
+
+#### Then just call the custom Manager method
+```python
+recent_users = Hotel.objects.recent_hotels()
+```
+
+---
+
+# Custom QuerySets and Managers
+
+```python
+class HotelQuerySet(models.query.QuerySet):
+    def active(self):
+        return self.filter(active=True)
+
+    def strip_hotels(self):
+        return self.filter(address_zip=89109)
+
+class HotelManager(models.Manager):
+    def get_queryset(self):
+        return HotelQuerySet(self.model, self._db)
+
+    def active(self):
+        return self.get_queryset().active()
+
+    def strip_hotels(self):
+        return self.get_queryset().strip_hotels()
+
+# Now I can call my custom Manager methods together
+active_strip_hotels = Hotel.objects.active().strip_hotels()
+```
+
+#### Good video blog on how to use these together
+
+[GoDjango: Better Models Through Custom Managers and QuerySets](https://godjango.com/51-better-models-through-custom-managers-and-querysets/)
 
 ---
 
@@ -208,6 +265,8 @@ class UserDetailView(LoginRequiredMixin, SetHeadlineMixin, TemplateView):
         context['user_dict'] = user_dict
         return context
 ```
+
+[django-braces](https://django-braces.readthedocs.org/en/latest/): use composition to add common functionality to CBVs
 ---
 
 # View (base.html)
@@ -247,7 +306,6 @@ class UserDetailView(LoginRequiredMixin, SetHeadlineMixin, TemplateView):
 
 ```xml
 {% extends "base.html" %}
-{% load staticfiles %}
 
 {% block content %}
 <div class="row">
@@ -266,21 +324,78 @@ class UserDetailView(LoginRequiredMixin, SetHeadlineMixin, TemplateView):
 
 ---
 
+# Views use Regex, kwargs
+
+```python
+from django.conf.urls import patterns
+from account import views
+
+urlpatterns = patterns('',
+    url(r'^hotel-detail-view/(?P<pk>\d+)/$', views.hotel_detail_view,
+        name='hotel_detail_view'),
+)
+```
+
+#### hotel-detail-view (views.py)
+```python
+def hotel_detail_view(request, pk):
+    hotel = get_object_or_404(Hotel, pk=pk)
+    return render(request, "hotel.html", {'hotel': hotel})
+    
+```
+
+#### template (hotel.html)
+```xml
+<a href="{% url 'hotel_detail_view' hotel.pk %}">Hotel Detail View</a>
+```
+
+---
+
 # Tests
 
 #### Use TestCase and/or py.test
 
 ```python
-from django.test import TestCase
-from django.core.urlresolvers import reverse
-
+from model_mommy import mommy
 
 class ViewTests(TestCase):
 
+    def setUp(self):
+        self.hotel = mommy.make(Hotel)
+
     def test_index(self):
-        response = self.client.get(reverse('index'))
-        assert response.status_code == 200
-        assert response.context['headline']
+        response = self.client.get(reverse('hotel_detail_view',
+            kwargs={'pk': self.hotel.pk}))
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.context['hotel'], self.hotel)
+```
+
+[model_mommy](https://model-mommy.readthedocs.org/en/latest/): use to easily generate Models for testing.
+
+---
+
+# MVC example of decoupling
+
+#### Use built-in Django forms and views for authentication
+
+```python
+from django.contrib.auth import views, forms
+
+urlpatterns = patterns('',
+    url(r'^login/$', views.login,
+        {'template_name': 'login.html',
+        'authentication_form': forms.AuthenticationForm},
+        name='login'),
+    )
+```
+
+#### login.html
+```xml
+<form action="" method="post">
+    {% csrf_token %}
+    {{ form }}
+    <input type="submit" value="Submit" />
+</form>
 ```
 
 ---
@@ -291,18 +406,27 @@ class: center, middle
 
 ---
 
-# Other Info
+# Some References
+
+Libraries / resources
+- Class Based Views reference: [http://ccbv.co.uk/](http://ccbv.co.uk/)
+- [django-angular](http://django-angular.readthedocs.org/en/latest/index.html): for easy integration with AngularJS
+for client side form validation
+- Django Library references
+    - [awesome-django](http://awesome-django.com/)
+    - [django packages](https://www.djangopackages.com/)
 
 My Preferred Django stack:
-- Python / Django
-- PostgreSQL 
-- Nginx
-- uWSGI
-- Celery
-- Redis
-- RabbitMQ
-- SaltStack
-- AngularJS
+- **Python / Django**
+- **PostgreSQL** - preferred DB of core django devs
+- **Nginx** - reverse proxy, encryption, load balancer
+- **uWSGI** - works with websockets
+- **Celery** - distributed task queue
+- **Redis** - data store
+- **RabbitMQ** - message broker
+- **SaltStack** - server configuration management (like chef, puppet)
+- **AngularJS** - preferred frontend Js framework
+
 
     </textarea>
     <script src="https://gnab.github.io/remark/downloads/remark-latest.min.js">
