@@ -23,5 +23,6 @@ urlpatterns = [
     url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     # My Apps
     url(r'^account/', include('account.urls')),
+    url(r'',include('contact.urls')),
     url(r'', include('user.urls')),
 ]

@@ -1127,3 +1127,142 @@ Traceback (most recent call last):
   File "/Users/aaron/Documents/virtualenvs/payg/lib/python3.4/site-packages/django/core/urlresolvers.py", line 411, in url_patterns
     raise ImproperlyConfigured(msg.format(name=self.urlconf_name))
 django.core.exceptions.ImproperlyConfigured: The included urlconf 'payg.urls' does not appear to have any patterns in it. If you see valid patterns in the file then the issue is probably caused by a circular import.
+Internal Server Error: /
+Traceback (most recent call last):
+  File "C:\Python27\Lib\site-packages\django\core\handlers\base.py", line 119, in get_response
+    resolver_match = resolver.resolve(request.path_info)
+  File "C:\Python27\Lib\site-packages\django\core\urlresolvers.py", line 366, in resolve
+    for pattern in self.url_patterns:
+  File "C:\Python27\Lib\site-packages\django\core\urlresolvers.py", line 402, in url_patterns
+    patterns = getattr(self.urlconf_module, "urlpatterns", self.urlconf_module)
+  File "C:\Python27\Lib\site-packages\django\core\urlresolvers.py", line 396, in urlconf_module
+    self._urlconf_module = import_module(self.urlconf_name)
+  File "C:\Python27\Lib\importlib\__init__.py", line 37, in import_module
+    __import__(name)
+  File "c:\github\django-payasyougo\payg\payg\urls.py", line 7, in <module>
+    from user import views as user_views
+  File "c:\github\django-payasyougo\payg\user\views.py", line 16, in <module>
+    from user.forms import UserCreateForm
+  File "c:\github\django-payasyougo\payg\user\forms.py", line 6, in <module>
+    from djangular.forms import NgFormValidationMixin
+ImportError: No module named forms
+Internal Server Error: /
+Traceback (most recent call last):
+  File "C:\Python27\Lib\site-packages\django\core\handlers\base.py", line 119, in get_response
+    resolver_match = resolver.resolve(request.path_info)
+  File "C:\Python27\Lib\site-packages\django\core\urlresolvers.py", line 366, in resolve
+    for pattern in self.url_patterns:
+  File "C:\Python27\Lib\site-packages\django\core\urlresolvers.py", line 402, in url_patterns
+    patterns = getattr(self.urlconf_module, "urlpatterns", self.urlconf_module)
+  File "C:\Python27\Lib\site-packages\django\core\urlresolvers.py", line 396, in urlconf_module
+    self._urlconf_module = import_module(self.urlconf_name)
+  File "C:\Python27\Lib\importlib\__init__.py", line 37, in import_module
+    __import__(name)
+  File "c:\github\django-payasyougo\payg\payg\urls.py", line 7, in <module>
+    from user import views as user_views
+  File "c:\github\django-payasyougo\payg\user\views.py", line 16, in <module>
+    from user.forms import UserCreateForm
+  File "c:\github\django-payasyougo\payg\user\forms.py", line 6, in <module>
+    from djangular.forms import NgFormValidationMixin
+ImportError: No module named forms
+Internal Server Error: /favicon.ico
+Traceback (most recent call last):
+  File "C:\Python27\Lib\site-packages\django\core\handlers\base.py", line 108, in get_response
+    response = middleware_method(request)
+  File "C:\Python27\Lib\site-packages\django\middleware\common.py", line 74, in process_request
+    if (not urlresolvers.is_valid_path(request.path_info, urlconf) and
+  File "C:\Python27\Lib\site-packages\django\core\urlresolvers.py", line 647, in is_valid_path
+    resolve(path, urlconf)
+  File "C:\Python27\Lib\site-packages\django\core\urlresolvers.py", line 522, in resolve
+    return get_resolver(urlconf).resolve(path)
+  File "C:\Python27\Lib\site-packages\django\core\urlresolvers.py", line 366, in resolve
+    for pattern in self.url_patterns:
+  File "C:\Python27\Lib\site-packages\django\core\urlresolvers.py", line 402, in url_patterns
+    patterns = getattr(self.urlconf_module, "urlpatterns", self.urlconf_module)
+  File "C:\Python27\Lib\site-packages\django\core\urlresolvers.py", line 396, in urlconf_module
+    self._urlconf_module = import_module(self.urlconf_name)
+  File "C:\Python27\Lib\importlib\__init__.py", line 37, in import_module
+    __import__(name)
+  File "c:\github\django-payasyougo\payg\payg\urls.py", line 7, in <module>
+    from user import views as user_views
+  File "c:\github\django-payasyougo\payg\user\views.py", line 16, in <module>
+    from user.forms import UserCreateForm
+  File "c:\github\django-payasyougo\payg\user\forms.py", line 6, in <module>
+    from djangular.forms import NgFormValidationMixin
+ImportError: No module named forms
+Internal Server Error: /
+Traceback (most recent call last):
+  File "C:\Python27\Lib\site-packages\django\core\handlers\base.py", line 119, in get_response
+    resolver_match = resolver.resolve(request.path_info)
+  File "C:\Python27\Lib\site-packages\django\core\urlresolvers.py", line 366, in resolve
+    for pattern in self.url_patterns:
+  File "C:\Python27\Lib\site-packages\django\core\urlresolvers.py", line 402, in url_patterns
+    patterns = getattr(self.urlconf_module, "urlpatterns", self.urlconf_module)
+  File "C:\Python27\Lib\site-packages\django\core\urlresolvers.py", line 396, in urlconf_module
+    self._urlconf_module = import_module(self.urlconf_name)
+  File "C:\Python27\Lib\importlib\__init__.py", line 37, in import_module
+    __import__(name)
+  File "c:\github\django-payasyougo\payg\payg\urls.py", line 26, in <module>
+    url(r'',include('contact.urls')),
+  File "C:\Python27\Lib\site-packages\django\conf\urls\__init__.py", line 33, in include
+    urlconf_module = import_module(urlconf_module)
+  File "C:\Python27\Lib\importlib\__init__.py", line 37, in import_module
+    __import__(name)
+  File "c:\github\django-payasyougo\payg\contact\urls.py", line 8, in <module>
+    url(r'^two-forms/$', TwoFormView.as_view(), name='two_forms'),
+NameError: name 'TwoFormView' is not defined
+Internal Server Error: /favicon.ico
+Traceback (most recent call last):
+  File "C:\Python27\Lib\site-packages\django\core\handlers\base.py", line 108, in get_response
+    response = middleware_method(request)
+  File "C:\Python27\Lib\site-packages\django\middleware\common.py", line 74, in process_request
+    if (not urlresolvers.is_valid_path(request.path_info, urlconf) and
+  File "C:\Python27\Lib\site-packages\django\core\urlresolvers.py", line 647, in is_valid_path
+    resolve(path, urlconf)
+  File "C:\Python27\Lib\site-packages\django\core\urlresolvers.py", line 522, in resolve
+    return get_resolver(urlconf).resolve(path)
+  File "C:\Python27\Lib\site-packages\django\core\urlresolvers.py", line 366, in resolve
+    for pattern in self.url_patterns:
+  File "C:\Python27\Lib\site-packages\django\core\urlresolvers.py", line 402, in url_patterns
+    patterns = getattr(self.urlconf_module, "urlpatterns", self.urlconf_module)
+  File "C:\Python27\Lib\site-packages\django\core\urlresolvers.py", line 396, in urlconf_module
+    self._urlconf_module = import_module(self.urlconf_name)
+  File "C:\Python27\Lib\importlib\__init__.py", line 37, in import_module
+    __import__(name)
+  File "c:\github\django-payasyougo\payg\payg\urls.py", line 26, in <module>
+    url(r'',include('contact.urls')),
+  File "C:\Python27\Lib\site-packages\django\conf\urls\__init__.py", line 33, in include
+    urlconf_module = import_module(urlconf_module)
+  File "C:\Python27\Lib\importlib\__init__.py", line 37, in import_module
+    __import__(name)
+  File "c:\github\django-payasyougo\payg\contact\urls.py", line 8, in <module>
+    url(r'^two-forms/$', TwoFormView.as_view(), name='two_forms'),
+NameError: name 'TwoFormView' is not defined
+Not Found: /favicon.ico
+Internal Server Error: /two-forms/
+Traceback (most recent call last):
+  File "C:\Python27\Lib\site-packages\django\core\handlers\base.py", line 132, in get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Python27\Lib\site-packages\django\views\generic\base.py", line 71, in view
+    return self.dispatch(request, *args, **kwargs)
+  File "C:\Python27\Lib\site-packages\django\views\generic\base.py", line 89, in dispatch
+    return handler(request, *args, **kwargs)
+  File "C:\Python27\Lib\site-packages\django\views\generic\edit.py", line 205, in get
+    form = self.get_form()
+  File "C:\Python27\Lib\site-packages\django\views\generic\edit.py", line 74, in get_form
+    return form_class(**self.get_form_kwargs())
+TypeError: __init__() got an unexpected keyword argument 'prefix'
+Not Found: /favicon.ico
+Internal Server Error: /two-forms/
+Traceback (most recent call last):
+  File "C:\Python27\Lib\site-packages\django\core\handlers\base.py", line 132, in get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+  File "C:\Python27\Lib\site-packages\django\views\generic\base.py", line 71, in view
+    return self.dispatch(request, *args, **kwargs)
+  File "C:\Python27\Lib\site-packages\django\views\generic\base.py", line 89, in dispatch
+    return handler(request, *args, **kwargs)
+  File "C:\Python27\Lib\site-packages\django\views\generic\edit.py", line 205, in get
+    form = self.get_form()
+  File "C:\Python27\Lib\site-packages\django\views\generic\edit.py", line 74, in get_form
+    return form_class(**self.get_form_kwargs())
+TypeError: __init__() got an unexpected keyword argument 'prefix'
