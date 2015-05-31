@@ -16,3 +16,5 @@ dump.rdb
 digital_ocean.conf
 *id_rsa*
 so_*
+db.sqlite3
+*.log
