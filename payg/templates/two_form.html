@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+
+
+{% block page_css %}
+<link href="{% static 'djangular/css/styles.css' %}" rel="stylesheet" />
+<link href="{% static 'djangular/css/bootstrap3.css' %}" rel="stylesheet" />
+<link href="{% static 'css/djangular-demo.css' %}" rel="stylesheet" />
+{% endblock page_css %}
+
+
+{% block content %}
+<div class="row">
+    <h1>{{ form2.form_name }}</h1>
+</div>
+<div class="row">
+    <form name="{{ form2.form_name }}" method="post" action="" novalidate>
+        {% csrf_token %}
+        <div>
+            {{ form2.as_div }}
+            <div class="form-group">
+                <div class="col-sm-4">
+                    {{ register_link|safe }}
+                </div>
+                <div class="col-sm-offset-10">
+                    <button class="btn btn-primary next-step btn-block" ng-disabled="{{ form2.form_name }}.$invalid">
+                        Next <i class="fa fa-arrow-circle-right"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+<hr>
+
+<div class="row">
+    <h1>{{ form2.form_name }}</h1>
+</div>
+<div class="row">
+    <form name="{{ form2.form_name }}" method="post" action="" novalidate>
+        {% csrf_token %}
+        <div>
+            {{ form2.as_div }}
+            <div class="form-group">
+                <div class="col-sm-4">
+                    {{ register_link|safe }}
+                </div>
+                <div class="col-sm-offset-10">
+                    <button class="btn btn-primary next-step btn-block" ng-disabled="{{ form2.form_name }}.$invalid">
+                        Next <i class="fa fa-arrow-circle-right"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+{% endblock content %}
